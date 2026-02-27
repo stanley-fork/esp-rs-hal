@@ -90,6 +90,9 @@ macro_rules! property {
     ("ecc.separate_jacobian_point_memory") => {
         true
     };
+    ("ecc.mem_block_size") => {
+        32
+    };
     ("gpio.has_bank_1") => {
         false
     };
@@ -389,6 +392,16 @@ macro_rules! for_each_ecc_working_mode {
         JacobianPointVerification), (7,
         AffinePointVerificationAndJacobianPointMultiplication), (8, ModularAddition), (9,
         ModularSubtraction), (10, ModularMultiplication), (11, ModularDivision)));
+    };
+}
+#[macro_export]
+#[cfg_attr(docsrs, doc(cfg(feature = "_device-selected")))]
+macro_rules! for_each_ecc_curve {
+    ($($pattern:tt => $code:tt;)*) => {
+        macro_rules! _for_each_inner_ecc_curve { $(($pattern) => $code;)* ($other : tt)
+        => {} } _for_each_inner_ecc_curve!((0, P192, 192));
+        _for_each_inner_ecc_curve!((1, P256, 256)); _for_each_inner_ecc_curve!((all(0,
+        P192, 192), (1, P256, 256)));
     };
 }
 #[macro_export]
